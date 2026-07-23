@@ -5,9 +5,16 @@ card(mountain,1..8;forest,1..8;hill,1..8;shadow,1..8;ring,1..5).
 % ACHIEVED - there are 4 players
 player(1..4).
 % ACHIEVED - there are 4 characters
-character(rodo;amwise;andalf;ipin).
+character(frodo;samwise;gandalf;pippin).
 
 % ACHIEVED - every player plays 1 unique character
 1 { player_character(P,C) : character(C) } 1 :- player(P).
 :- player_character(P,C), player_character(P2,C), P != P2.
+
+% ACHIEVED - every player has 9 cards (Suit + Rank) unless they're gandalf (gandalf has a unique trait that gets the leftover card)
+9 { player_card(P,S,R) : card(S,R) } 9 :- player(P), not player_character(P,gandalf).
+10 { player_card(P,S,R) : card(S,R) } 10 :- player(P), player_character(P,gandalf).
+
+% ACHIEVED - frodo is the player holding the one ring
+:- player_character(P,frodo), not player_card(P,ring,1).
 
