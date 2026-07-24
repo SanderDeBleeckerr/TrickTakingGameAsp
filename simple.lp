@@ -31,4 +31,21 @@ turn(T,I+1,Q) :- turn(T,I,P), next(P,Q), I < 4, pos(I).
 leader(1,P)   :- player_card(P,ring,1).    % holder of the One Ring leads trick 1
 leader(T+1,W) :- wins(T,W), trick(T+1).    % winner leads the next
 
+% Playing cards
+
+% every player plays exactly 1 of their own cards in each trick
+1 { plays(T,P,S,R) : player_card(P,S,R) } 1 :- player(P), trick(T).
+% a given card can be played in at most 1 trick (no replaying a card)
+:- player_card(P,S,R), #count{ T : plays(T,P,S,R) } > 1.
+
+% a card is gone from a player's hand in trick T if they already played it in an earlier trick
+gone(P,S,R,T)    :- plays(T2,P,S,R), trick(T), T2 < T.
+% a card is still in hand for trick T if it wasn't already played before T
+in_hand(P,S,R,T) :- player_card(P,S,R), trick(T), not gone(P,S,R,T).
+
+% the suit led in a trick is the suit played by that trick's leader
+led(T,S) :- plays(T,P,S,_), leader(T,P).
+% a player must follow the led suit if they still hold a card of that suit
+:- plays(T,P,S,_), led(T,L), S != L, in_hand(P,L,_,T).   % follow suit if able
+
 
