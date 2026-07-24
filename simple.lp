@@ -18,3 +18,15 @@ character(frodo;samwise;gandalf;pippin).
 % ACHIEVED - frodo is the player holding the one ring
 :- player_character(P,frodo), not player_card(P,ring,1).
 
+% Turn order
+
+next(P,Q) :- player(P), Q = P\4+1.        % clockwise seating
+pos(1..4).
+
+turn(T,1,P)   :- leader(T,P).              % leader is first to play
+turn(T,I+1,Q) :- turn(T,I,P), next(P,Q), I < 4, pos(I).
+
+leader(1,P)   :- player_card(P,ring,1).    % holder of the One Ring leads trick 1
+leader(T+1,W) :- wins(T,W), trick(T+1).    % winner leads the next
+
+
