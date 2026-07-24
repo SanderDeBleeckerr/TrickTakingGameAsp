@@ -14,6 +14,8 @@ character(frodo;samwise;gandalf;pippin).
 % ACHIEVED - every player has 9 cards (Suit + Rank) unless they're gandalf (gandalf has a unique trait that gets the leftover card)
 9 { player_card(P,S,R) : card(S,R) } 9 :- player(P), not player_character(P,gandalf).
 10 { player_card(P,S,R) : card(S,R) } 10 :- player(P), player_character(P,gandalf).
+% ACHIEVED - every card is dealt to at most one player
+:- player_card(P,S,R), player_card(P2,S,R), P != P2.
 
 % ACHIEVED - frodo is the player holding the one ring
 :- player_character(P,frodo), not player_card(P,ring,1).
